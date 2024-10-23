@@ -4,19 +4,21 @@
         <!-- <el-aside width="200px">Aside</el-aside> -->
         <Aside/>
         <el-container>
-          <el-header>Header</el-header>
-          <el-main>Main</el-main>
+          <el-header><Header/></el-header>
+          
+          <el-main> <RouterView/></el-main>
         </el-container>
       </el-container>
     </div>
   </template>
 <script setup>
 import Aside from '../components/aside.vue';
+import Header from '../components/navHeader.vue'
 </script>
 <style lang="less" scoped>
     .common-layout {
         height: 100%;
-        .el-container{
+        .el-container {
             height: 100%;
         }
     }

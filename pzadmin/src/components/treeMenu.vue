@@ -1,39 +1,41 @@
-<script setup>
-
-</script>
 
 <template>
-        <el-sub-menu index="1">
-          <template #title>
-            <el-icon><location /></el-icon>
-            <span>Navigator One</span>
-          </template>
-          <el-menu-item-group title="Group One">
-            <el-menu-item index="1-1">item one</el-menu-item>
-            <el-menu-item index="1-2">item two</el-menu-item>
-          </el-menu-item-group>
-          <el-menu-item-group title="Group Two">
-            <el-menu-item index="1-3">item three</el-menu-item>
-          </el-menu-item-group>
-          <el-sub-menu index="1-4">
-            <template #title>item four</template>
-            <el-menu-item index="1-4-1">item one</el-menu-item>
-          </el-sub-menu>
+        <template v-for="(item,index) in props.menuData">
+        <!-- 如果没有孩子或者孩子数量为0，那使用 <el-menu-item>-->
+        <el-menu-item
+        @click="handleClick(item,`${props.index}-${item.meta.id}`)"
+        v-if = "!item.children||item.children.length==0" 
+        :index="`${props.index}-${item.meta.id}`"
+        :key="`${props.index}-${item.meta.id}`">
+          <el-icon size="20">
+          <component :is="item.meta.icon"></component>
+          </el-icon>
+          <span>{{item.meta.name+props.index}}</span>
+        </el-menu-item>
+        <!-- 如果有孩子，就用<el-sub-menu>标签 --> 
+        <el-sub-menu v-else :index="`${props.index}-${item.meta.id}`">
+            <template #title>
+            <el-icon size="20">
+                <component :is="item.meta.icon"></component>
+            </el-icon>
+            <span>{{item.meta.name+props.index}}</span>
+            </template>
+            <!-- 这个递归够我学一辈子啊。。 -->
+            <tree-menu :index="`${props.index+1}-${item.meta.id}`" :menuData="item.children"/> 
         </el-sub-menu>
-        <el-menu-item index="2">
-          <el-icon><icon-menu /></el-icon>
-          <span>Navigator Two</span>
-        </el-menu-item>
-        <el-menu-item index="3" disabled>
-          <el-icon><document /></el-icon>
-          <span>Navigator Three</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <el-icon><setting /></el-icon>
-          <span>Navigator Four</span>
-        </el-menu-item>
+    </template>
 </template>
 
+<script setup>
+ const props = defineProps(['menuData','index'])
+ import { useRouter } from 'vue-router';
+ const router = useRouter()
+ console.log(props.index,'????????????') 
+ const handleClick = (item,active) => {
+    console.log(item,'item')
+    router.push(item.meta.path)
+ }
+</script>
 
 <style scoped>
 
