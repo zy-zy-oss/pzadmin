@@ -1,23 +1,32 @@
 <template>
     <div class="header-container">
         <div class="header-left  flex-box">
-            <el-icon class="icon" size="20">
+            <el-icon class="icon" size="20" @click="store.commit('collapseMenu')">
                 <Fold />
             </el-icon>
+            <ul class="flex-box">
+                <li v-for="(item, index) in selectMenu" :key="item.path" :class="{ selected: route.path === item.path }"
+                    class="tab flex-box">
+                    <el-icon size="12">
+                        <component :is="item.icon"></component>
+                    </el-icon>
+                    <router-link class="text flex-box" :to="{ path: item.path }">{{ item.name }}</router-link>
+                    <el-icon class="close" size="12" @click="closeTab(item, index)">
+                        <Close />
+                    </el-icon>
+                </li>
+
+            </ul>
         </div>
         <div class="header-right">
-            <el-dropdown>
+            <el-dropdown @command="handleClick">
                 <div class="el-dropdown-link flex-box">
                     <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                     <p class="user-name">admin</p>
                 </div>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>Action 1</el-dropdown-item>
-                        <el-dropdown-item>Action 2</el-dropdown-item>
-                        <el-dropdown-item>Action 3</el-dropdown-item>
-                        <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                        <el-dropdown-item divided>Action 5</el-dropdown-item>
+                        <el-dropdown-item command="cancel">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
@@ -25,13 +34,49 @@
     </div>
 </template>
 <script setup>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router'; //useRoute代表当前的路由对象，可以通过他拿到当前的url路径
+const route = useRoute()
+const store = useStore() //拿到store的实例
+const router = useRouter()
+const selectMenu = computed(() => store.state.menu.selectMenu)
+const closeTab = (item, index) => {
+    store.commit('closeMenu', item)
+    if (route.path !== item.path) {
+        return
+    }
+    const selectMenuData = selectMenu.value
+    if (index === selectMenuData.length) {
+        if (!selectMenuData.length) {
+            router.push('/')
+        } else {
+            router.push({
+                path: selectMenuData[index - 1].path
+            })
+        }
+    } else {
+        router.push({
+            path: selectMenuData[index].path
+        })
 
+    }
+}
+const handleClick = (command) =>{
+    if(command==='cancel'){
+        localStorage.removeItem('pz_token')
+        localStorage.removeItem('pz_userinfo')
+        localStorage.removeItem('pz_sys')
+        window.location.href = window.location.origin
+    }
+}
 </script>
 
 <style lang="less" scoped>
 .flex-box {
     display: flex;
-    align-items: center
+    align-items: center;
+    height: 100%;
 }
 
 .header-container {
@@ -44,6 +89,7 @@
 
     .header-left {
         height: 100%;
+
         .icon {
             width: 45px;
             height: 100%;
@@ -53,11 +99,53 @@
             background-color: #f5f5f5;
             cursor: pointer;
         }
+
+        .tab {
+            padding: 0 10px;
+            height: 100%;
+
+            .text {
+                margin: 0 5px;
+            }
+
+            .close {
+                visibility: hidden;
+            }
+
+            &.selected {
+                a {
+                    color: #409eff;
+                }
+
+                i {
+                    color: #409eff;
+                }
+
+                background-color: #f5f5f5;
+            }
+        }
+
+        .tab:hover {
+            background-color: #f5f5f5;
+
+            .close {
+                visibility: inherit;
+                cursor: pointer;
+                color: #000;
+            }
+        }
     }
-    .header-right{
-        .user-name{
+
+    .header-right {
+        .user-name {
             margin-left: 10px;
         }
+    }
+
+    a {
+        height: 100%;
+        color: #333;
+        font-size: 15px;
     }
 
 }

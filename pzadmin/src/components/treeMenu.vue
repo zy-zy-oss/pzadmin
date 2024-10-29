@@ -29,10 +29,12 @@
 <script setup>
  const props = defineProps(['menuData','index'])
  import { useRouter } from 'vue-router';
+ import { useStore } from 'vuex';
  const router = useRouter()
- console.log(props.index,'????????????') 
+ const store = useStore()
  const handleClick = (item,active) => {
     console.log(item,'item')
+    store.commit('addMenu',item.meta)
     router.push(item.meta.path)
  }
 </script>

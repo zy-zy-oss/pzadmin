@@ -32,8 +32,12 @@ https://element-plus.org/zh-CN/guide/quickstart.html
 % npm install -D unplugin-vue-components unplugin-auto-import
 ```
 
-一些questions：reactive from  'vue'，defineProps。Vue3的东西还挺陌生的。` <component :is="item.meta.icon"></component>`⬅️自定义组件，递归组件！
+一些questions：reactive from  'vue'，defineProps。Vue3的东西还挺陌生的。` <component :is="item.meta.icon"></component>`⬅️自定义组件，递归组件！localstorage！
 
 ### 四、Vuex的引用（不过现在流行pinia，后面再学吧
 
 Vuex 是一个专为 Vue.js 应用程序开发的 **状态管理模式 + 库** 。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
+
+### 五、Axios的二次封装
+
+如果需要到拦截器（在请求或者响应被then或catch处理前拦截它们）
